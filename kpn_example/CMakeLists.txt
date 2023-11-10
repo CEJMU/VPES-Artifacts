@@ -4,10 +4,6 @@ add_executable(kpn_example
     kpn.h
 )
 
-target_include_directories(kpn_example
-    PRIVATE ${SYSTEMC_INCLUDE}
-)
-
 target_link_libraries(kpn_example
-    PRIVATE ${SYSTEMC_LIBRARY}
+    SystemC::systemc
 )

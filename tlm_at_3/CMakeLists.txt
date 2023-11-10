@@ -8,10 +8,6 @@ add_executable(tlm_at_3
     ../tlm_at_1/util.h
 )
 
-target_include_directories(tlm_at_3
-    PRIVATE ${SYSTEMC_INCLUDE}
-)
-
 target_link_libraries(tlm_at_3
-    PRIVATE ${SYSTEMC_LIBRARY}
+    SystemC::systemc
 )

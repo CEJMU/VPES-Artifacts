@@ -6,10 +6,6 @@ add_executable(tlm_payload_extensions
     ../tlm_multipasstrough_sockets/target.h
 )
 
-target_include_directories(tlm_payload_extensions
-    PRIVATE ${SYSTEMC_INCLUDE}
-)
-
 target_link_libraries(tlm_payload_extensions
-    PRIVATE ${SYSTEMC_LIBRARY}
+    SystemC::systemc
 )

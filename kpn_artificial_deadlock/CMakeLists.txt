@@ -5,10 +5,6 @@ add_executable(kpn_artificial_deadlock
     utils.h
 )
 
-target_include_directories(kpn_artificial_deadlock
-    PRIVATE ${SYSTEMC_INCLUDE}
-)
-
 target_link_libraries(kpn_artificial_deadlock
-    PRIVATE ${SYSTEMC_LIBRARY}
+    SystemC::systemc
 )

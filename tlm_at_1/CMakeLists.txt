@@ -8,10 +8,6 @@ add_executable(tlm_at_1
     ../tlm_protocol_checker/tlm2_base_protocol_checker.h
 )
 
-target_include_directories(tlm_at_1
-    PRIVATE ${SYSTEMC_INCLUDE}
-)
-
 target_link_libraries(tlm_at_1
-    PRIVATE ${SYSTEMC_LIBRARY}
+    SystemC::systemc
 )
