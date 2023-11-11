@@ -1,8 +1,23 @@
 cmake_minimum_required(VERSION 3.10)
+include(FetchContent)
 
 project(VPES-Artifacts)
 
+### SystemC ###
+list(APPEND CMAKE_PREFIX_PATH $ENV{SYSTEMC_HOME})
+FetchContent_Declare(
+    systemc
+    GIT_REPOSITORY https://github.com/accellera-official/systemc.git
+    GIT_TAG 2.3.4
+    FIND_PACKAGE_ARGS NAMES SystemCLanguage)
+
+# Allow populating of a user-set SystemC package
+if (NOT TARGET SystemC::systemc)
+    FetchContent_MakeAvailable(systemc)
+endif()
+
 find_package(SystemCLanguage CONFIG REQUIRED)
+
 set (CMAKE_CXX_STANDARD ${SystemC_CXX_STANDARD})
 
 add_subdirectory(callbacks)
