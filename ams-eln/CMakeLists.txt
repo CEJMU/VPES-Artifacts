@@ -4,7 +4,7 @@ add_executable(ams-eln
 
 find_library(SYSTEMC_AMS_LIBRARY 
     NAMES systemc-ams
-    CMakeLists.txt install_ams.sh   PATHS ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/lib/
+    PATHS ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/lib/
 )
 
 target_include_directories(ams-eln
