@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24.0)
+cmake_minimum_required(VERSION 3.18.0)
 project(VPES-Artifacts)
 
 include(FetchContent)
@@ -6,13 +6,23 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ Standard")
 message(STATUS "CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
-### SystemC ###
 FetchContent_Declare(systemc
     GIT_REPOSITORY https://github.com/accellera-official/systemc.git
     GIT_TAG 2.3.4
 )
 
 FetchContent_MakeAvailable(systemc)
+
+find_library(SYSTEMC_AMS_LIBRARY 
+    NAMES systemc-ams
+    PATHS ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/lib/
+)
+
+execute_process (
+    COMMAND bash -c "cd .. && sh ./install_ams.sh && cd build"
+)
+
+set(SYSTEMC_AMS_INCLUDE ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/include)
 
 set (CMAKE_CXX_STANDARD ${SystemC_CXX_STANDARD})
 
@@ -44,7 +54,7 @@ add_subdirectory(tlm_at_2)
 add_subdirectory(tlm_at_3)
 add_subdirectory(tlm_at_4)
 add_subdirectory(tlm_at_backpressure)
-#add_subdirectory(tlm_cpu_example)
+add_subdirectory(tlm_cpu_example)
 add_subdirectory(tlm_lt_debug_transport)
 add_subdirectory(tlm_lt_dmi)
 add_subdirectory(tlm_lt_initiator_interconnect_target)
@@ -55,9 +65,9 @@ add_subdirectory(tlm_payload_extensions)
 add_subdirectory(tlm_protocol_checker)
 add_subdirectory(tlm_quantum_keeper)
 add_subdirectory(tlm_simple_sockets)
-#add_subdirectory(ams-eln)
-#add_subdirectory(ams-eln2)
-#add_subdirectory(ams-tdf)
-#add_subdirectory(ams-tdf2)
-#add_subdirectory(ams-lsf)
-#add_subdirectory(ams-lsf2)
+add_subdirectory(ams-eln)
+add_subdirectory(ams-eln2)
+add_subdirectory(ams-tdf)
+add_subdirectory(ams-tdf2)
+add_subdirectory(ams-lsf)
+add_subdirectory(ams-lsf2)
