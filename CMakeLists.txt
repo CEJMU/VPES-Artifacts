@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(VPES-Artifacts)
 
 include(FetchContent)
+
+add_definitions(-w)
 
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ Standard")
 message(STATUS "CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
@@ -13,9 +15,42 @@ FetchContent_Declare(systemc
 
 FetchContent_MakeAvailable(systemc)
 
-execute_process (
-    COMMAND bash -c "cd .. && sh ./install_ams.sh && cd build"
+FetchContent_Declare(systemc_ams
+    URL https://www.coseda-tech.com/files/Files/Proof-of-Concepts/systemc-ams-2.3.4.tar.gz
 )
+FetchContent_MakeAvailable(systemc_ams)
+
+target_include_directories(systemc-ams PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(systemc-ams PUBLIC ${systemc_ams_SOURCE_DIR})
+target_include_directories(systemc-ams PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(impl_ac PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(impl_ac PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(core PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(core PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(conservative PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(conservative PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(eln PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(eln PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(impl_lsf PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(impl_lsf PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(impl_tdf PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(impl_tdf PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(linear PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(linear PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(solvertdf PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(solvertdf PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(user_solver PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(user_solver PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(sparse_library PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(sparse_library PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(synchronization PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(synchronization PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(data_types PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(data_types PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(reporting PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(reporting PUBLIC ${systemc_SOURCE_DIR}/src)
+target_include_directories(tracing PUBLIC ${systemc_ams_SOURCE_DIR}/src)
+target_include_directories(tracing PUBLIC ${systemc_SOURCE_DIR}/src)
 
 add_subdirectory(callbacks)
 add_subdirectory(clock_generator)
