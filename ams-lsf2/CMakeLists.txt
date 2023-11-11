@@ -5,16 +5,11 @@ add_executable(ams-lsf2
     sc_main.cpp
 )
 
-find_library(SYSTEMC_AMS_LIBRARY 
-    NAMES systemc-ams
-    PATHS ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/lib/
-)
-
 target_include_directories(ams-lsf2
-    PRIVATE ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/include
+    PUBLIC ${systemc_ams_SOURCE_DIR}/src
 )
 
 target_link_libraries(ams-lsf2
-    PRIVATE ${SYSTEMC_AMS_LIBRARY}
     SystemC::systemc
+    systemc-ams
 )
