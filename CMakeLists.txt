@@ -3,6 +3,8 @@ project(VPES-Artifacts)
 
 include(FetchContent)
 
+add_definitions(-w)
+
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ Standard")
 message(STATUS "CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
