@@ -2,7 +2,9 @@
 
 INSTALL_DIR=`pwd`/build/_deps/systemc-ams/
 
-if [! -d "$INSTALL_DIR" ]; then
+if [ -d "$INSTALL_DIR" ]; then
+    echo "Skip building SystemC-AMS"
+else
     mkdir -p $INSTALL_DIR
     SYSTEMC_INCLUDES=`pwd`/build/_deps/systemc-src/src/
     CXX_STANDARD=17
@@ -21,7 +23,6 @@ if [! -d "$INSTALL_DIR" ]; then
     make install
     cd ..
     cd ..
+    cd ..
     rm -rf tmp
-else
-    echo "Skip building SystemC-AMS"
 fi

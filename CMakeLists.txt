@@ -13,18 +13,9 @@ FetchContent_Declare(systemc
 
 FetchContent_MakeAvailable(systemc)
 
-find_library(SYSTEMC_AMS_LIBRARY 
-    NAMES systemc-ams
-    PATHS ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/lib/
-)
-
 execute_process (
     COMMAND bash -c "cd .. && sh ./install_ams.sh && cd build"
 )
-
-set(SYSTEMC_AMS_INCLUDE ${CMAKE_SOURCE_DIR}/build/_deps/systemc-ams/include)
-
-set (CMAKE_CXX_STANDARD ${SystemC_CXX_STANDARD})
 
 add_subdirectory(callbacks)
 add_subdirectory(clock_generator)
