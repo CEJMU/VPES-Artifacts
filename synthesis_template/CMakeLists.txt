@@ -23,7 +23,8 @@ project(nand_gate)
 set(SC_TOP "nand_gate")
 
 # Name of the toplevel SystemVerilog component
-# (This should be identical in most cases)
+# (This should only differ from SC_TOP if the SystemC module has the name of a
+# SystemVerilog keyword)
 set(SV_TOP ${SC_TOP})
 # *****************************************************************************
 
