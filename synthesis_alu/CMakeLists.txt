@@ -93,6 +93,10 @@ add_custom_target(visualize
     COMMENT "Generating svg and pdf visualization"
 )
 
+add_custom_target(pnr
+    COMMAND nextpnr-ice40 --up5k --package sg48 --asc ${SV_TOP}.asc --json ${SV_TOP}.json
+)
+
 # add_dependencies(visualize synthesis)
 add_dependencies(synthesis ${SC_TOP}_sctool)
 add_dependencies(synthesis_ice40 ${SC_TOP}_sctool)
