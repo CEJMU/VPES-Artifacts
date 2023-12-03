@@ -18,50 +18,51 @@ SC_MODULE(alu) {
             wait();
             if (reset) {
                 rd.write(0);
-            }
+            } else {
 
-            sc_bv<7> opcode = instruction.read().range(6, 0);
-            sc_bv<10> funct73 = instruction.read().range(16, 7);
-            if (opcode == 0b0110011) {         // R-Type
-                if (funct73 == 0b0000000000) { // ADD
-                    rd.write(rs1.read().to_int() + rs2.read().to_int());
+                sc_bv<7> opcode = instruction.read().range(6, 0);
+                sc_bv<10> funct73 = instruction.read().range(16, 7);
+                if (opcode == 0b0110011) {         // R-Type
+                    if (funct73 == 0b0000000000) { // ADD
+                        rd.write(rs1.read().to_int() + rs2.read().to_int());
 
-                } else if (funct73 == 0b0000000111) { // AND
-                    rd.write(rs1.read().to_uint() & rs2.read().to_uint());
+                    } else if (funct73 == 0b0000000111) { // AND
+                        rd.write(rs1.read().to_uint() & rs2.read().to_uint());
 
-                } else if (funct73 == 0b0000001000) { // MUL
-                    rd.write(rs1.read().to_int() * rs2.read().to_int());
+                    } else if (funct73 == 0b0000001000) { // MUL
+                        rd.write(rs1.read().to_int() * rs2.read().to_int());
 
-                } else if (funct73 == 0b0000000001) { // SLL
-                    rd.write(rs1.read().to_int()
-                             << rs2.read().range(4, 0).to_uint());
+                    } else if (funct73 == 0b0000000001) { // SLL
+                        rd.write(rs1.read().to_int()
+                                 << rs2.read().range(4, 0).to_uint());
 
-                } else if (funct73 == 0b0100000101) { // SRA
-                    rd.write(rs1.read().to_int() >>
-                             rs2.read().range(4, 0).to_uint());
+                    } else if (funct73 == 0b0100000101) { // SRA
+                        rd.write(rs1.read().to_int() >>
+                                 rs2.read().range(4, 0).to_uint());
 
+                    } else {
+                        rd.write(0);
+                    }
+                } else if (opcode == 0b0010011) { // ADDI
+                    rd.write(rs1.read().to_int() + imm.read().to_int());
+                } else if (opcode == 0b0000011) { // LW
+                    rd.write(rs1.read().to_int() + imm.read().to_int());
+                } else if (opcode == 0b0100011) { // SW
+                    rd.write(rs1.read().to_int() + imm.read().to_int());
+                } else if (opcode == 0b1100011) { // BNE
+                    sc_bv<32> temp;
+                    temp.range(31, 2) = 0;
+
+                    if (rs1.read() == rs2.read()) {
+                        temp.range(1, 0) = 0b10;
+                    } else {
+                        temp.range(1, 0) = 0b00;
+                    }
+
+                    rd.write(temp);
                 } else {
                     rd.write(0);
                 }
-            } else if (opcode == 0b0010011) { // ADDI
-                rd.write(rs1.read().to_int() + imm.read().to_int());
-            } else if (opcode == 0b0000011) { // LW
-                rd.write(rs1.read().to_int() + imm.read().to_int());
-            } else if (opcode == 0b0100011) { // SW
-                rd.write(rs1.read().to_int() + imm.read().to_int());
-            } else if (opcode == 0b1100011) { // BNE
-                sc_bv<32> temp;
-                temp.range(31, 2) = 0;
-
-                if (rs1.read() == rs2.read()) {
-                    temp.range(1, 0) = 0b10;
-                } else {
-                    temp.range(1, 0) = 0b00;
-                }
-
-                rd.write(temp);
-            } else {
-                rd.write(0);
             }
         }
     }
