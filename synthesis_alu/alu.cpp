@@ -69,6 +69,11 @@ SC_MODULE(alu) {
     SC_CTOR(alu)
         : clk("clk"), reset("reset"), rs1("rs1"), rs2("rs2"), imm("imm"),
           instruction("instruction"), rd("rd") {
+
+        // We are using a SC_THREAD here. According to the SystemC synthesis
+        // specification SC_METHOD should be okay too. The Intel compiler seems
+        // to always infer combinational logic from SC_METHOD however. This is
+        // also stated in their user manual
         SC_THREAD(do_alu);
         sensitive << clk.pos();
         async_reset_signal_is(reset, true);
