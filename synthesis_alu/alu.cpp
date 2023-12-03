@@ -15,55 +15,56 @@ SC_MODULE(alu) {
 
     void do_alu() {
         while (true) {
-            wait();
-            if (reset) {
+            if (reset.read()) {
+                // reset code goes here
                 rd.write(0);
-            } else {
-                sc_bv<7> opcode = instruction.read().range(6, 0);
-                sc_bv<10> funct73 = instruction.read().range(16, 7);
+            }
+            wait();
 
-                switch (opcode.to_uint()) {
-                case 0b0110011: // R-Type
-                    switch (funct73.to_uint()) {
-                    case 0b0000000000: // ADD
-                        rd.write(rs1.read().to_int() + rs2.read().to_int());
-                        break;
+            sc_bv<7> opcode = instruction.read().range(6, 0);
+            sc_bv<10> funct73 = instruction.read().range(16, 7);
 
-                    case 0b0000000111: // AND
-                        rd.write(rs1.read().to_uint() & rs2.read().to_uint());
-                        break;
-
-                    case 0b0000001000: // MUL
-                        rd.write(rs1.read().to_int() * rs2.read().to_int());
-                        break;
-
-                    case 0b0000000001: // SLL
-                        rd.write(rs1.read().to_int()
-                                 << rs2.read().range(4, 0).to_uint());
-                        break;
-
-                    case 0b0100000101: // SRA
-                        rd.write(rs1.read().to_int() >>
-                                 rs2.read().range(4, 0).to_uint());
-                        break;
-
-                    default:
-                        rd.write(0);
-                    }
-                    break;
-                case 0b0010011: // ADDI
-                case 0b0000011: // LW
-                case 0b0100011: // SW
-                    rd.write(rs1.read().to_int() + imm.read().to_int());
+            switch (opcode.to_uint()) {
+            case 0b0110011: // R-Type
+                switch (funct73.to_uint()) {
+                case 0b0000000000: // ADD
+                    rd.write(rs1.read().to_int() + rs2.read().to_int());
                     break;
 
-                case 0b1100011: // BNE
-                    rd.write((rs1.read() == rs2.read()) ? 0b10 : 0b00);
+                case 0b0000000111: // AND
+                    rd.write(rs1.read().to_uint() & rs2.read().to_uint());
+                    break;
+
+                case 0b0000001000: // MUL
+                    rd.write(rs1.read().to_int() * rs2.read().to_int());
+                    break;
+
+                case 0b0000000001: // SLL
+                    rd.write(rs1.read().to_int()
+                             << rs2.read().range(4, 0).to_uint());
+                    break;
+
+                case 0b0100000101: // SRA
+                    rd.write(rs1.read().to_int() >>
+                             rs2.read().range(4, 0).to_uint());
                     break;
 
                 default:
                     rd.write(0);
                 }
+                break;
+            case 0b0010011: // ADDI
+            case 0b0000011: // LW
+            case 0b0100011: // SW
+                rd.write(rs1.read().to_int() + imm.read().to_int());
+                break;
+
+            case 0b1100011: // BNE
+                rd.write((rs1.read() == rs2.read()) ? 0b10 : 0b00);
+                break;
+
+            default:
+                rd.write(0);
             }
         }
     }
