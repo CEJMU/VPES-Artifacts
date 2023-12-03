@@ -95,3 +95,4 @@ add_custom_target(visualize
 
 # add_dependencies(visualize synthesis)
 add_dependencies(synthesis ${SC_TOP}_sctool)
+add_dependencies(synthesis_ice40 ${SC_TOP}_sctool)
