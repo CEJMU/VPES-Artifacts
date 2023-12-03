@@ -19,7 +19,6 @@ SC_MODULE(alu) {
             if (reset) {
                 rd.write(0);
             } else {
-
                 sc_bv<7> opcode = instruction.read().range(6, 0);
                 sc_bv<10> funct73 = instruction.read().range(16, 7);
                 if (opcode == 0b0110011) {         // R-Type
@@ -71,12 +70,11 @@ SC_MODULE(alu) {
         : clk("clk"), reset("reset"), rs1("rs1"), rs2("rs2"), imm("imm"),
           instruction("instruction"), rd("rd") {
 
-        // We are using a SC_THREAD here. According to the SystemC synthesis
+        // We are using a SC_CTHREAD here. According to the SystemC synthesis
         // specification SC_METHOD should be okay too. The Intel compiler seems
         // to always infer combinational logic from SC_METHOD however. This is
         // also stated in their user manual
-        SC_THREAD(do_alu);
-        sensitive << clk.pos();
+        SC_CTHREAD(do_alu, clk.pos());
         async_reset_signal_is(reset, true);
     }
 };
