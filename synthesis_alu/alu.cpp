@@ -14,13 +14,12 @@ SC_MODULE(alu) {
     sc_out<sc_bv<32>> rd;
 
     void do_alu() {
-        while (true) {
-            if (reset.read()) {
-                // reset code goes here
-                rd.write(0);
-            }
-            wait();
+        // reset code begins here
+        cout << "ALU: reset code is executed" << endl;
+        wait();
 
+        // operational code begins here
+        while (true) {
             sc_bv<7> opcode = instruction.read().range(6, 0);
             sc_bv<10> funct73 = instruction.read().range(16, 7);
 
@@ -66,6 +65,8 @@ SC_MODULE(alu) {
             default:
                 rd.write(0);
             }
+
+            wait();
         }
     }
 
