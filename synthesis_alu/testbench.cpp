@@ -37,15 +37,15 @@ struct Tb : sc_module {
     }
 
     void test() {
-        const int OP_ADD = 0b00000000000110011;
-        const int OP_AND = 0b00000001110110011;
-        const int OP_MUL = 0b00000010000110011;
-        const int OP_SLL = 0b00000000010110011;
-        const int OP_SRA = 0b01000001010110011;
-        const int OP_ADDI = 0b00000000000010011;
-        const int OP_LW = 0b00000000000000011;
-        const int OP_SW = 0b00000000000100011;
-        const int OP_BNE = 0b00000000001100011;
+        const unsigned int OP_ADD = 0b00000000000110011;
+        const unsigned int OP_AND = 0b00000001110110011;
+        const unsigned int OP_MUL = 0b00000010000110011;
+        const unsigned int OP_SLL = 0b00000000010110011;
+        const unsigned int OP_SRA = 0b01000001010110011;
+        const unsigned int OP_ADDI = 0b00000000000010011;
+        const unsigned int OP_LW = 0b00000000000000011;
+        const unsigned int OP_SW = 0b00000000000100011;
+        const unsigned int OP_BNE = 0b00000000001100011;
 
         reset.write(false);
 
