@@ -21,45 +21,47 @@ SC_MODULE(alu) {
             } else {
                 sc_bv<7> opcode = instruction.read().range(6, 0);
                 sc_bv<10> funct73 = instruction.read().range(16, 7);
-                if (opcode == 0b0110011) {         // R-Type
-                    if (funct73 == 0b0000000000) { // ADD
+
+                switch (opcode.to_uint()) {
+                case 0b0110011: // R-Type
+                    switch (funct73.to_uint()) {
+                    case 0b0000000000: // ADD
                         rd.write(rs1.read().to_int() + rs2.read().to_int());
+                        break;
 
-                    } else if (funct73 == 0b0000000111) { // AND
+                    case 0b0000000111: // AND
                         rd.write(rs1.read().to_uint() & rs2.read().to_uint());
+                        break;
 
-                    } else if (funct73 == 0b0000001000) { // MUL
+                    case 0b0000001000: // MUL
                         rd.write(rs1.read().to_int() * rs2.read().to_int());
+                        break;
 
-                    } else if (funct73 == 0b0000000001) { // SLL
+                    case 0b0000000001: // SLL
                         rd.write(rs1.read().to_int()
                                  << rs2.read().range(4, 0).to_uint());
+                        break;
 
-                    } else if (funct73 == 0b0100000101) { // SRA
+                    case 0b0100000101: // SRA
                         rd.write(rs1.read().to_int() >>
                                  rs2.read().range(4, 0).to_uint());
+                        break;
 
-                    } else {
+                    default:
                         rd.write(0);
                     }
-                } else if (opcode == 0b0010011) { // ADDI
+                    break;
+                case 0b0010011: // ADDI
+                case 0b0000011: // LW
+                case 0b0100011: // SW
                     rd.write(rs1.read().to_int() + imm.read().to_int());
-                } else if (opcode == 0b0000011) { // LW
-                    rd.write(rs1.read().to_int() + imm.read().to_int());
-                } else if (opcode == 0b0100011) { // SW
-                    rd.write(rs1.read().to_int() + imm.read().to_int());
-                } else if (opcode == 0b1100011) { // BNE
-                    sc_bv<32> temp;
-                    temp.range(31, 2) = 0;
+                    break;
 
-                    if (rs1.read() == rs2.read()) {
-                        temp.range(1, 0) = 0b10;
-                    } else {
-                        temp.range(1, 0) = 0b00;
-                    }
+                case 0b1100011: // BNE
+                    rd.write((rs1.read() == rs2.read()) ? 0b10 : 0b00);
+                    break;
 
-                    rd.write(temp);
-                } else {
+                default:
                     rd.write(0);
                 }
             }
