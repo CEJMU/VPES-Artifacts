@@ -123,6 +123,14 @@ struct Tb : sc_module {
         cout << rs1.read().to_int() << " + " << rs2.read().to_int() << " = "
              << rd.read().to_int() << endl;
 
+        // ============================ RESET ============================
+        reset.write(true);
+        cout << sc_time_stamp() << ": Performing reset" << endl;
+        wait(SC_ZERO_TIME);
+        cout << sc_time_stamp() << ": reset done" << endl;
+        reset.write(false);
+        wait(SC_ZERO_TIME);
+
         // ============================ SLL ============================
         rs1.write(20);
         rs2.write(2);
