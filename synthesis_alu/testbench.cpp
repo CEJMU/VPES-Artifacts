@@ -13,232 +13,100 @@
 // ICSC requires DUT top should be instantiated inside wrapper (typically TB)
 // and all DUT ports are bound.
 struct Tb : sc_module {
-    sc_in<bool> clk;
-    sc_signal<bool> reset;
-    sc_signal<sc_bv<32>> rs1;
-    sc_signal<sc_bv<32>> rs2;
-    sc_signal<sc_bv<12>> imm;
-    sc_signal<sc_bv<17>> instruction;
+    sc_signal<sc_bv<4>> a;
+    sc_signal<sc_bv<4>> b;
+    sc_signal<sc_bv<3>> opcode;
 
-    sc_signal<sc_bv<32>> rd;
+    sc_signal<sc_bv<4>> z;
 
     alu dut_inst{"dut_inst"};
 
     SC_CTOR(Tb) {
-        dut_inst.clk(clk);
-        dut_inst.reset(reset);
-        dut_inst.rs1(rs1);
-        dut_inst.rs2(rs2);
-        dut_inst.imm(imm);
-        dut_inst.instruction(instruction);
-        dut_inst.rd(rd);
+        dut_inst.a(a);
+        dut_inst.b(b);
+        dut_inst.opcode(opcode);
+        dut_inst.z(z);
 
         SC_THREAD(test);
     }
 
     void test() {
-        const unsigned int OP_ADD = 0b00000000000110011;
-        const unsigned int OP_AND = 0b00000001110110011;
-        const unsigned int OP_MUL = 0b00000010000110011;
-        const unsigned int OP_SLL = 0b00000000010110011;
-        const unsigned int OP_SRA = 0b01000001010110011;
-        const unsigned int OP_ADDI = 0b00000000000010011;
-        const unsigned int OP_LW = 0b00000000000000011;
-        const unsigned int OP_SW = 0b00000000000100011;
-        const unsigned int OP_BNE = 0b00000000001100011;
+        // ============================ ADD ============================
+        a.write(4);
+        b.write(-3);
+        opcode.write(alu::ADD);
+        wait(sc_time(20, SC_NS));
+        cout << sc_time_stamp() << ": ";
+        cout << a.read().to_int() << " + " << b.read().to_int() << " = "
+             << z.read().to_int() << endl;
 
-        reset.write(false);
+        a.write(1);
+        b.write(5);
+        opcode.write(alu::ADD);
+        wait(sc_time(20, SC_NS));
+        cout << sc_time_stamp() << ": ";
+        cout << a.read().to_int() << " + " << b.read().to_int() << " = "
+             << z.read().to_int() << endl;
 
         // ============================ MUL ============================
-        rs1.write(20);
-        rs2.write(2);
-        imm.write(0xFFF);
-        instruction.write(OP_MUL);
+        a.write(3);
+        b.write(2);
+        opcode.write(alu::MUL);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " * " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
+        cout << a.read().to_int() << " * " << b.read().to_int() << " = "
+             << z.read().to_int() << endl;
 
-        rs1.write(20);
-        rs2.write(-100);
-        imm.write(0xFFF);
-        instruction.write(OP_MUL);
+        a.write(-1);
+        b.write(6);
+        opcode.write(alu::MUL);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " * " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(65535); // overflow after MUL
-        rs2.write(65536);
-        imm.write(0xFFF);
-        instruction.write(OP_MUL);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " * " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(65536); // overflow after MUL
-        rs2.write(65536);
-        imm.write(0xFFF);
-        instruction.write(OP_MUL);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " * " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        // ============================ ADD ============================
-        rs1.write(100);
-        rs2.write(27);
-        imm.write(0xFFF);
-        instruction.write(OP_ADD);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " + " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(110);
-        rs2.write(-27);
-        imm.write(0xFFF);
-        instruction.write(OP_ADD);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " + " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(0);
-        rs2.write(-2);
-        imm.write(0xFFF);
-        instruction.write(OP_ADD);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " + " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(-2147483648);
-        rs2.write(-1);
-        imm.write(0xFFF);
-        instruction.write(OP_ADD);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " + " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        // ============================ RESET ============================
-        reset.write(true);
-        cout << sc_time_stamp() << ": Performing reset" << endl;
-        wait(SC_ZERO_TIME);
-        cout << sc_time_stamp() << ": reset done" << endl;
-        reset.write(false);
-        wait(SC_ZERO_TIME);
+        cout << a.read().to_int() << " * " << b.read().to_int() << " = "
+             << z.read().to_int() << endl;
 
         // ============================ SLL ============================
-        rs1.write(20);
-        rs2.write(2);
-        imm.write(0xFFF);
-        instruction.write(OP_SLL);
+        a.write(1);
+        b.write(2);
+        opcode.write(alu::SLL);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " << " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(1);
-        rs2.write(30);
-        imm.write(0xFFF);
-        instruction.write(OP_SLL);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " << " << rs2.read().to_uint() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(1);
-        rs2.write(31);
-        imm.write(0xFFF);
-        instruction.write(OP_SLL);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " << " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(1);
-        rs2.write(32);
-        imm.write(0xFFF);
-        instruction.write(OP_SLL);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " << " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
+        cout << a.read().to_int() << " << " << b.read().to_int() << " = "
+             << z.read().to_int() << endl;
 
         // ============================ SRA ============================
-        rs1.write(-17);
-        rs2.write(1);
-        imm.write(0xFFF);
-        instruction.write(OP_SRA);
+        a.write(-8);
+        b.write(1);
+        opcode.write(alu::SRA);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " >> " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(40);
-        rs2.write(2);
-        imm.write(0xFFF);
-        instruction.write(OP_SRA);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " >> " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
-
-        rs1.write(65536);
-        rs2.write(10);
-        imm.write(0xFFF);
-        instruction.write(OP_SRA);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " >> " << rs2.read().to_int() << " = "
-             << rd.read().to_int() << endl;
+        cout << a.read().to_int() << " >> " << b.read().to_int() << " = "
+             << z.read().to_int() << endl;
 
         // ============================ AND ============================
-        rs1.write(20);
-        rs2.write(17);
-        imm.write(0xFFF);
-        instruction.write(OP_AND);
+        a.write(0b1010);
+        b.write(0b0110);
+        opcode.write(alu::AND);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read() << " & " << rs2.read() << " = " << rd.read() << endl;
+        cout << a.read() << " & " << b.read() << " = " << z.read() << endl;
 
-        rs1.write(0b10101010101010101010101010101010);
-        rs2.write(0b01010101010101010101010101010101);
-        imm.write(0xFFF);
-        instruction.write(OP_AND);
+        // ============================ SLT ============================
+        a.write(4);
+        b.write(5);
+        opcode.write(alu::SLT);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read() << " & " << rs2.read() << " = " << rd.read() << endl;
+        cout << a.read().to_int() << " < " << b.read().to_int() << ": "
+             << (bool)z.read().to_int() << endl;
 
-        rs1.write(0xABCDEF01);
-        rs2.write(0xABCDEF01);
-        imm.write(0xFFF);
-        instruction.write(OP_AND);
+        a.write(5);
+        b.write(5);
+        opcode.write(alu::SLT);
         wait(sc_time(20, SC_NS));
         cout << sc_time_stamp() << ": ";
-        cout << rs1.read() << " & " << rs2.read() << " = " << rd.read() << endl;
-
-        // ============================ BNE ============================
-        rs1.write(10);
-        rs2.write(10);
-        imm.write(0xFFF);
-        instruction.write(OP_BNE);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " == " << rs2.read().to_int() << ": "
-             << (bool)rd.read().to_int() << endl;
-
-        rs1.write(10);
-        rs2.write(11);
-        imm.write(0xFFF);
-        instruction.write(OP_BNE);
-        wait(sc_time(20, SC_NS));
-        cout << sc_time_stamp() << ": ";
-        cout << rs1.read().to_int() << " == " << rs2.read().to_int() << ": "
-             << (bool)rd.read().to_int() << endl;
+        cout << a.read().to_int() << " < " << b.read().to_int() << ": "
+             << (bool)z.read().to_int() << endl;
 
         sc_stop();
     }
@@ -246,8 +114,6 @@ struct Tb : sc_module {
 
 int sc_main(int argc, char **argv) {
     Tb tb("tb");
-    sc_clock my_clock("clock", 10, SC_NS, 0.5, 0, SC_NS, false);
-    tb.clk(my_clock);
     sc_start();
 
     return 0;
