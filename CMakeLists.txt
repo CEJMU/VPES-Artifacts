@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.24)
 project(VPES-Artifacts)
 
 include(FetchContent)
@@ -10,7 +10,7 @@ message(STATUS "CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 FetchContent_Declare(systemc
     GIT_REPOSITORY https://github.com/accellera-official/systemc.git
-    GIT_TAG 2.3.4
+    GIT_TAG 3.0.1
 )
 
 FetchContent_MakeAvailable(systemc)
