@@ -8,6 +8,7 @@ include(FetchContent)
 add_definitions(-w)
 
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ Standard")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 message(STATUS "CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 FetchContent_Declare(systemc
